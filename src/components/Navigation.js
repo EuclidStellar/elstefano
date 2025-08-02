@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navigation = () => {
   const location = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { path: '/', label: 'QuillBot Flow', icon: '✍️' },
@@ -17,25 +18,56 @@ const Navigation = () => {
     { path: '/tone-analyzer', label: 'Tone Analyzer', icon: '🎭' }
   ];
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <nav className="navigation">
-      <div className="nav-brand">
-        <h1>Stefano De Almanos</h1>
-      </div>
-      <ul className="nav-links">
-        {navItems.map((item) => (
-          <li key={item.path}>
-            <Link 
-              to={item.path} 
-              className={location.pathname === item.path ? 'active' : ''}
-            >
-              <span className="nav-icon">{item.icon}</span>
-              {item.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <>
+      {/* Hamburger Menu Button */}
+      <button 
+        className={`mobile-menu-toggle ${isMobileMenuOpen ? 'open' : ''}`}
+        onClick={toggleMobileMenu}
+        aria-label="Toggle navigation menu"
+      >
+        <div className="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </button>
+
+      {/* Mobile Overlay */}
+      <div 
+        className={`mobile-nav-overlay ${isMobileMenuOpen ? 'show' : ''}`}
+        onClick={closeMobileMenu}
+      ></div>
+
+      {/* Navigation */}
+      <nav className={`navigation ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
+        <div className="nav-brand">
+          <h1>Stefano De Almanos</h1>
+        </div>
+        <ul className="nav-links">
+          {navItems.map((item) => (
+            <li key={item.path}>
+              <Link 
+                to={item.path} 
+                className={location.pathname === item.path ? 'active' : ''}
+                onClick={closeMobileMenu}
+              >
+                <span className="nav-icon">{item.icon}</span>
+                {item.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </>
   );
 };
 
