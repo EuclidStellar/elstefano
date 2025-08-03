@@ -203,7 +203,7 @@ const MainEditor = () => {
       <ApiKeyModal isOpen={showApiModal} onApiKeySet={handleApiKeySet} />
       
       <div className="editor-header">
-        <h1 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '2em', margin: '0.5em 0', flexGrow: 1 }}>LexiconAI</h1>
+        <h1 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '2em', margin: '0.5em 0', flexGrow: 1 }}>LexicraftAI</h1>
         <div className="header-meta">
           <div className="author-info">
             <span>by euclidstellar</span>

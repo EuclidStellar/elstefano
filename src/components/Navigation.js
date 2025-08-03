@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../img/lexical_logo_test.png';
+import logo from '../img/lexicraft.png';
 
 const Navigation = () => {
   const location = useLocation();
