@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import MainEditor from './components/MainEditor';
 import Paraphraser from './components/Paraphraser';
 import EnhancedParaphraser from './components/EnhancedParaphraser';
@@ -34,6 +35,7 @@ const App = () => {
           </Routes>
         </main>
       </div>
+      <Analytics />
     </Router>
   );
 };

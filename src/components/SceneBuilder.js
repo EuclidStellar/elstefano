@@ -107,7 +107,7 @@ const SceneBuilder = () => {
 • End with hooks or resolutions
 • Use dialogue to reveal character"
             className="scene-textarea"
-            style={{ height: '400px' }}
+            style={{ height: '400px' , width: '100%'}}
           />
 
           <div className="scene-footer">

@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import logo from '../img/lexical_logo_test.png';
 
 const Navigation = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { path: '/', label: 'QuillBot Flow', icon: '✍️' },
-    { path: '/enhanced-paraphraser', label: 'Literary Paraphraser', icon: '🎨' },
-    { path: '/grammar-checker', label: 'Grammar Pro', icon: '📝' },
-    { path: '/character-assistant', label: 'Character Dev', icon: '👥' },
-    { path: '/plot-analyzer', label: 'Plot Structure', icon: '📊' },
-    { path: '/manuscript-manager', label: 'Manuscript Manager', icon: '📖' },
-    { path: '/scene-builder', label: 'Scene Builder', icon: '🎪' },
-    { path: '/readability-optimizer', label: 'Readability', icon: '📊' },
-    { path: '/summarizer', label: 'Summarizer', icon: '📄' },
-    { path: '/tone-analyzer', label: 'Tone Analyzer', icon: '🎭' }
+    { path: '/', label: 'Writer\'s Flow', icon: '›' },
+    { path: '/enhanced-paraphraser', label: 'Literary Paraphraser', icon: '›' },
+    { path: '/grammar-checker', label: 'Grammar Pro', icon: '›' },
+    { path: '/character-assistant', label: 'Character Dev', icon: '›' },
+    { path: '/plot-analyzer', label: 'Plot Structure', icon: '›' },
+    { path: '/manuscript-manager', label: 'Manuscript Manager', icon: '›' },
+    { path: '/scene-builder', label: 'Scene Builder', icon: '›' },
+    { path: '/readability-optimizer', label: 'Readability', icon: '›' },
+    { path: '/summarizer', label: 'Summarizer', icon: '›' },
+    { path: '/tone-analyzer', label: 'Tone Analyzer', icon: '›' }
   ];
 
   const toggleMobileMenu = () => {
@@ -50,7 +51,9 @@ const Navigation = () => {
       {/* Navigation */}
       <nav className={`navigation ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="nav-brand">
-          <h1>Stefano De Almanos</h1>
+          <Link to="/" onClick={closeMobileMenu}>
+            <img src={logo} alt="LexiconAI Logo" className="nav-logo" />
+          </Link>
         </div>
         <ul className="nav-links">
           {navItems.map((item) => (

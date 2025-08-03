@@ -203,21 +203,28 @@ const MainEditor = () => {
       <ApiKeyModal isOpen={showApiModal} onApiKeySet={handleApiKeySet} />
       
       <div className="editor-header">
-        <h1>✍️ QuillBot Flow - All-in-One Writing Space</h1>
-        <div className="editor-controls">
-          <button 
-            className={`compare-btn ${compareMode ? 'active' : ''}`}
-            onClick={() => setCompareMode(!compareMode)}
-          >
-            📊 Compare Modes
-          </button>
-          <button 
-            className="api-key-btn"
-            onClick={() => setShowApiModal(true)}
-          >
-            🔑 API Key
-          </button>
-          <span className="word-count">{text.split(' ').filter(w => w).length} words</span>
+        <h1 style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '2em', margin: '0.5em 0', flexGrow: 1 }}>LexicalAI</h1>
+        <div className="header-meta">
+          <div className="author-info">
+            <span>by euclidstellar</span>
+            <a href="https://github.com/euclidstellar" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://linkedin.com/in/euclidstellar" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </div>
+          <div className="editor-controls">
+            <button 
+              className={`compare-btn ${compareMode ? 'active' : ''}`}
+              onClick={() => setCompareMode(!compareMode)}
+            >
+              📊 Compare Modes
+            </button>
+            <button 
+              className="api-key-btn"
+              onClick={() => setShowApiModal(true)}
+            >
+              API Key
+            </button>
+            <span className="word-count">{text.split(' ').filter(w => w).length} words</span>
+          </div>
         </div>
       </div>
 
@@ -234,9 +241,9 @@ const MainEditor = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             onMouseUp={handleTextSelection}
-            placeholder="Start writing your masterpiece here... ✨
+            placeholder="Start writing your masterpiece here...
 
-💡 Tips:
+Tips:
 • Select words to get synonyms
 • Use the tools panel to enhance your writing
 • Try different paraphrasing modes for various styles
@@ -246,7 +253,7 @@ const MainEditor = () => {
           
           {frozenWords.size > 0 && (
             <div className="frozen-words">
-              <h4>🧊 Frozen Words (Protected from changes):</h4>
+              <h4>Frozen Words (Protected from changes):</h4>
               <div>
                 {Array.from(frozenWords).map(word => (
                   <span key={word} className="frozen-word" onClick={() => freezeWord(word)}>
@@ -260,7 +267,7 @@ const MainEditor = () => {
 
         <div className="tools-section">
           <div className="tool-group">
-            <h3>🎨 Paraphrasing Modes</h3>
+            <h3>Paraphrasing Modes</h3>
             <div className="mode-buttons">
               {paraphraseModes.map(mode => (
                 <button
@@ -269,14 +276,6 @@ const MainEditor = () => {
                   disabled={loading[mode] || !apiKeySet}
                   className="mode-btn"
                 >
-                  <span style={{ marginRight: '0.5rem' }}>
-                    {mode === 'Formal' && '👔'}
-                    {mode === 'Academic' && '🎓'}
-                    {mode === 'Simple' && '💡'}
-                    {mode === 'Creative' && '🎨'}
-                    {mode === 'Shorten' && '📝'}
-                    {mode === 'Expand' && '📖'}
-                  </span>
                   {loading[mode] ? 'Processing...' : mode}
                 </button>
               ))}
@@ -284,18 +283,15 @@ const MainEditor = () => {
           </div>
 
           <div className="tool-group">
-            <h3>🔍 Analysis Tools</h3>
+            <h3>Analysis Tools</h3>
             <div className="analysis-buttons">
               <button onClick={handleToneAnalysis} disabled={loading.tone || !apiKeySet}>
-                <span style={{ marginRight: '0.5rem' }}>🎭</span>
                 {loading.tone ? 'Analyzing...' : 'Tone Insights'}
               </button>
               <button onClick={handleSummarize} disabled={loading.summarize || !apiKeySet}>
-                <span style={{ marginRight: '0.5rem' }}>📄</span>
                 {loading.summarize ? 'Summarizing...' : 'Summarize'}
               </button>
               <button onClick={handleHumanize} disabled={loading.humanize || !apiKeySet}>
-                <span style={{ marginRight: '0.5rem' }}>🤖</span>
                 {loading.humanize ? 'Humanizing...' : 'AI Humanizer'}
               </button>
             </div>
@@ -313,7 +309,7 @@ const MainEditor = () => {
             zIndex: 1000
           }}
         >
-          <h4>💭 Synonyms for "{selectedText}"</h4>
+          <h4>Synonyms for "{selectedText}"</h4>
           <div className="synonym-list">
             {synonyms.map((synonym, index) => (
               <button
@@ -326,7 +322,7 @@ const MainEditor = () => {
             ))}
           </div>
           <button onClick={() => freezeWord(selectedText)} className="freeze-btn">
-            {frozenWords.has(selectedText) ? '🔓 Unfreeze' : '🧊 Freeze'} Word
+            {frozenWords.has(selectedText) ? 'Unfreeze' : 'Freeze'} Word
           </button>
         </div>
       )}
@@ -349,10 +345,7 @@ const MainEditor = () => {
         {Object.entries(results).map(([key, value]) => (
           <div key={key} className="result-item">
             <h3>
-              {key === 'toneAnalysis' && '🎭 '}
-              {key === 'summary' && '📄 '}
-              {key === 'humanized' && '🤖 '}
-              {key.charAt(0).toUpperCase() + key.slice(1)}
+              {key.charAt(0).toUpperCase() + key.slice(1).replace('Analysis', ' Analysis')}
             </h3>
             {key === 'toneAnalysis' ? (
               <div className="tone-results">
