@@ -38,7 +38,7 @@ This application is structured as a suite of specialized tools, each targeting a
 
 1.  **Clone the repository:**
     ````sh
-    git clone https://github.com/your-username/elstefano.git
+    git clone https://github.com/euclidstellar/elstefano.git
     cd elstefano
     ````
 
