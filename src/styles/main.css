@@ -2178,3 +2178,22 @@ body {
   border-bottom-right-radius: 8px;
   border-color: #d8d1c7;
 }
+
+
+.chapter-content-input .ql-editor {
+  min-height: 200px;
+  font-family: 'Georgia', serif;
+}
+
+.chapter-content-input .ql-toolbar {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-color: #d8d1c7;
+  background: #fdfbf9;
+}
+
+.chapter-content-input .ql-container {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  border-color: #d8d1c7;
+}

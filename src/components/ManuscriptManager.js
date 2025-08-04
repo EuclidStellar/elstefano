@@ -1,5 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { geminiService } from '../services/geminiAPI';
+
+const modules = {
+  toolbar: [
+    [{ 'header': [1, 2, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{'list': 'ordered'}, {'list': 'bullet'}],
+    ['clean']
+  ],
+};
+
+const formats = [
+  'header',
+  'bold', 'italic', 'underline', 'strike',
+  'list', 'bullet'
+];
+
+const getPlainText = (html) => {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  return tempDiv.textContent || tempDiv.innerText || '';
+};
 
 const ManuscriptManager = () => {
   const [chapters, setChapters] = useState([]);
@@ -21,13 +44,14 @@ const ManuscriptManager = () => {
   }, [chapters]);
 
   const addChapter = () => {
-    if (!currentChapter.title.trim() || !currentChapter.content.trim()) return;
+    const plainContent = getPlainText(currentChapter.content);
+    if (!currentChapter.title.trim() || !plainContent.trim()) return;
 
     const newChapter = {
       id: Date.now(),
       title: currentChapter.title,
       content: currentChapter.content,
-      wordCount: currentChapter.content.split(' ').filter(w => w).length,
+      wordCount: plainContent.split(' ').filter(w => w).length,
       createdAt: new Date().toLocaleDateString(),
       status: 'draft'
     };
@@ -39,7 +63,7 @@ const ManuscriptManager = () => {
   const updateChapter = (id, updatedChapter) => {
     setChapters(prev => prev.map(chapter => 
       chapter.id === id 
-        ? { ...chapter, ...updatedChapter, wordCount: updatedChapter.content.split(' ').filter(w => w).length }
+        ? { ...chapter, ...updatedChapter, wordCount: getPlainText(updatedChapter.content).split(' ').filter(w => w).length }
         : chapter
     ));
     setEditingChapter(null);
@@ -59,7 +83,7 @@ const ManuscriptManager = () => {
       const chapterData = chapters.map(ch => ({
         title: ch.title,
         wordCount: ch.wordCount,
-        content: ch.content.substring(0, 500) // First 500 chars for analysis
+        content: getPlainText(ch.content).substring(0, 500) // First 500 chars for analysis
       }));
 
       const response = await geminiService.analyzeManuscript(chapterData);
@@ -77,7 +101,7 @@ const ManuscriptManager = () => {
     setCurrentChapter(prev => ({
       ...prev,
       content,
-      wordCount: content.split(' ').filter(w => w).length
+      wordCount: getPlainText(content).split(' ').filter(w => w).length
     }));
   };
 
@@ -117,19 +141,20 @@ const ManuscriptManager = () => {
           className="chapter-title-input"
         />
         
-        <textarea
+        <ReactQuill
           value={currentChapter.content}
-          onChange={(e) => handleContentChange(e.target.value)}
+          onChange={handleContentChange}
           placeholder="Write your chapter content here..."
           className="chapter-content-input"
-          style={{ height: '300px' }}
+          modules={modules}
+          formats={formats}
         />
         
         <div className="chapter-input-footer">
           <span className="word-count">{currentChapter.wordCount} words</span>
           <button 
             onClick={addChapter}
-            disabled={!currentChapter.title.trim() || !currentChapter.content.trim()}
+            disabled={!currentChapter.title.trim() || !getPlainText(currentChapter.content).trim()}
             className="button"
           >
             Add Chapter
@@ -268,7 +293,7 @@ const ChapterDisplay = ({ chapter, index, onEdit, onDelete }) => (
     </div>
     
     <div className="chapter-preview">
-      {chapter.content.substring(0, 200)}...
+      {getPlainText(chapter.content).substring(0, 200)}...
     </div>
   </div>
 );
@@ -301,11 +326,12 @@ const ChapterEditor = ({ chapter, onSave, onCancel }) => {
         <option value="final">Final</option>
       </select>
       
-      <textarea
+      <ReactQuill
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={setContent}
         className="chapter-content-input"
-        style={{ height: '200px' }}
+        modules={modules}
+        formats={formats}
       />
       
       <div className="editor-actions">
