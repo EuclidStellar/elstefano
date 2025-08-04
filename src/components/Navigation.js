@@ -1,10 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../img/lexicraft.png';
 
 const Navigation = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [theme, setTheme] = useState('lexicraft');
+
+  const themes = [
+    { value: 'lexicraft', label: 'Lexicraft (Default)' },
+    { value: 'monochrome', label: 'Monochrome' },
+    { value: 'parchment', label: 'Parchment (Light)' },
+    { value: 'veridian', label: 'Veridian (Forest)' }
+  ];
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'lexicraft';
+    setTheme(savedTheme);
+    document.body.setAttribute('data-theme', savedTheme);
+  }, []);
+
+  const handleThemeChange = (e) => {
+    const newTheme = e.target.value;
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.body.setAttribute('data-theme', newTheme);
+  };
 
   const navItems = [
     { path: '/', label: 'Writer\'s Flow', icon: '›' },
@@ -69,6 +90,15 @@ const Navigation = () => {
             </li>
           ))}
         </ul>
+
+        <div className="theme-selector">
+          <label htmlFor="theme-select">Theme:</label>
+          <select id="theme-select" value={theme} onChange={handleThemeChange}>
+            {themes.map(t => (
+              <option key={t.value} value={t.value}>{t.label}</option>
+            ))}
+          </select>
+        </div>
       </nav>
     </>
   );
