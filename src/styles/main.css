@@ -2149,3 +2149,32 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+
+.main-textarea:focus {
+  outline: none;
+  border-color: #264c28;
+  box-shadow: 0 0 0 3px rgba(38, 76, 40, 0.1);
+}
+
+.main-textarea .ql-editor {
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #264c28;
+  min-height: 420px;
+}
+
+.main-textarea .ql-toolbar {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-color: #d8d1c7;
+  background: #fdfbf9;
+}
+
+.main-textarea .ql-container {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-color: #d8d1c7;
+}

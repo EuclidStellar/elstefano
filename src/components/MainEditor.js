@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { geminiService } from '../services/geminiAPI';
 import ApiKeyModal from './ApiKeyModal';
 
@@ -17,7 +19,7 @@ const MainEditor = () => {
   const [apiKeySet, setApiKeySet] = useState(false);
   const [error, setError] = useState('');
   
-  const textareaRef = useRef(null);
+  const quillRef = useRef(null);
 
   useEffect(() => {
     const savedKey = localStorage.getItem('gemini_api_key');
@@ -35,31 +37,31 @@ const MainEditor = () => {
     setShowApiModal(false);
   };
 
+  const handleTextChange = (content) => {
+    setText(content);
+  };
+
   const handleTextSelection = async () => {
     if (!apiKeySet) {
       setShowApiModal(true);
       return;
     }
 
-    const selection = window.getSelection();
-    const selectedText = selection.toString().trim();
-    
-    if (selectedText && selectedText.length > 0) {
-      setSelectedText(selectedText);
-      
-      // Get word synonyms if single word selected
-      if (selectedText.split(' ').length === 1) {
+    const editor = quillRef.current.getEditor();
+    const range = editor.getSelection();
+    if (range && range.length > 0) {
+      const selected = editor.getText(range.index, range.length);
+      setSelectedText(selected);
+
+      if (selected.split(' ').length === 1) {
         try {
-          const response = await geminiService.getSynonyms(selectedText, text);
+          const response = await geminiService.getSynonyms(selected, editor.getText());
           if (response.success) {
             setSynonyms(response.synonyms);
-            
-            // Position synonym popup near selection
-            const range = selection.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
+            const bounds = editor.getBounds(range.index);
             setSynonymPosition({
-              x: rect.left,
-              y: rect.bottom + window.scrollY
+              x: bounds.left,
+              y: bounds.bottom + window.scrollY
             });
             setShowSynonyms(true);
           }
@@ -73,8 +75,12 @@ const MainEditor = () => {
   };
 
   const replaceSynonym = (synonym) => {
-    const newText = text.replace(selectedText, synonym);
-    setText(newText);
+    const editor = quillRef.current.getEditor();
+    const range = editor.getSelection();
+    if (range) {
+      editor.deleteText(range.index, range.length);
+      editor.insertText(range.index, synonym);
+    }
     setShowSynonyms(false);
   };
 
@@ -88,20 +94,27 @@ const MainEditor = () => {
     setFrozenWords(newFrozenWords);
   };
 
+  const getPlainText = (html) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || '';
+  };
+
   const handleParaphrase = async (mode, customPrompt = '') => {
     if (!apiKeySet) {
       setShowApiModal(true);
       return;
     }
 
-    if (!text.trim()) return;
+    const plainText = getPlainText(text);
+    if (!plainText.trim()) return;
     
     setLoading(prev => ({ ...prev, [mode]: true }));
     setError('');
     
     try {
       // Protect frozen words
-      let processedText = text;
+      let processedText = plainText;
       frozenWords.forEach(word => {
         processedText = processedText.replace(new RegExp(`\\b${word}\\b`, 'gi'), `[FROZEN]${word}[/FROZEN]`);
       });
@@ -236,19 +249,16 @@ const MainEditor = () => {
 
       <div className="editor-container">
         <div className="input-section">
-          <textarea
-            ref={textareaRef}
+          <ReactQuill
+            ref={quillRef}
+            theme="snow"
             value={text}
-            onChange={(e) => setText(e.target.value)}
-            onMouseUp={handleTextSelection}
-            placeholder="Start writing your masterpiece here...
-
-Tips:
-• Select words to get synonyms
-• Use the tools panel to enhance your writing
-• Try different paraphrasing modes for various styles
-• Enable compare mode to see multiple versions"
+            onChange={handleTextChange}
+            onBlur={handleTextSelection}
+            placeholder="Start writing your masterpiece here..."
             className="main-textarea"
+            modules={modules}
+            formats={formats}
           />
           
           {frozenWords.size > 0 && (
@@ -366,5 +376,25 @@ Tips:
     </div>
   );
 };
+
+const modules = {
+  toolbar: [
+    [{ 'header': [1, 2, 3, false] }, { 'font': [] }],
+    [{ 'size': ['small', false, 'large', 'huge'] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [{ 'color': [] }, { 'background': [] }],
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'indent': '-1'}, { 'indent': '+1' }],
+    ['link', 'image', 'video'],
+    ['clean']
+  ],
+};
+
+const formats = [
+  'header', 'font', 'size',
+  'bold', 'italic', 'underline', 'strike', 'blockquote',
+  'color', 'background',
+  'list', 'bullet', 'indent',
+  'link', 'image', 'video'
+];
 
 export default MainEditor;
