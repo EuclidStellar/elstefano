@@ -18,6 +18,6 @@ jobs:
           fetch-depth: 0 # Required to get the full git history for diffing
 
       - name: Run Smart AI Code Review
-        uses: euclidstellar/code-review-agent@latest
+        uses: euclidstellar/code-review-agent@v1.0.4
         with:
           github-token: ${{ secrets.GH_SECRET }}
